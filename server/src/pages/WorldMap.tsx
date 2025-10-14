@@ -2,12 +2,14 @@ import { RATContext } from "../rat/RATContext";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import ReactECharts from "echarts-for-react";
 import * as echarts from "echarts";
+import { useTranslation } from "react-i18next";
 
 import worldmap from "../components/world/world.json";
 
 export const WorldMap = () => {
   const { clientList } = useContext(RATContext)!;
   const mapRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   const [isMapRegistered, setIsMapRegistered] = useState(false);
 
@@ -48,7 +50,7 @@ export const WorldMap = () => {
     backgroundColor: "#0e0e0e",
     series: [
       {
-        name: "Connected Clients",
+        name: t("worldMap.connectedClients"),
         type: "map",
         roam: true,
         map: "WORLD",
@@ -83,7 +85,7 @@ export const WorldMap = () => {
       inRange: {
         color: ["rgba(20,71,230,0)", "rgba(20,71,230,1)"],
       },
-      text: ["High", "Low"],
+      text: [t("worldMap.high"), t("worldMap.low")],
       textStyle: {
         color: "white",
       },

@@ -12,6 +12,8 @@ import { RATContext } from "./rat/RATContext";
 import { startServerCmd, stopServerCmd } from "./rat/RATCommands";
 import { useContext } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
+import { LanguageSelector } from "./components/LanguageSelector";
 
 const SidebarButton = ({ icon: Icon, label, to, active }: any) => {
   const navigate = useNavigate();
@@ -49,6 +51,7 @@ const SidebarBurger = ({ color, icon: Icon }: any) => {
 
 export const Layout = () => {
   const location = useLocation();
+  const { t } = useTranslation();
 
   const { port, setPort, setRunning, running, clientList, setClientList } =
     useContext(RATContext)!;
@@ -57,13 +60,13 @@ export const Layout = () => {
     let serverMessage = await startServerCmd(port);
 
     if (serverMessage === "true") {
-      toast.success("Server started successfully!", {
+      toast.success(t('layout.serverStarted'), {
         className: `!bg-white !text-black !rounded-2xl !border-accentx`,
       });
 
       setRunning(true);
     } else {
-      toast.error("Server failed to start!", {
+      toast.error(t('layout.serverFailed'), {
         className: `!bg-white !text-black !rounded-2xl !border-accentx`,
       });
     }
@@ -74,13 +77,13 @@ export const Layout = () => {
 
     if (serverMessage === "true") {
       setClientList([]);
-      toast.success("Server stopped successfully!", {
+      toast.success(t('layout.serverStopped'), {
         className: `!bg-white !text-black !rounded-2xl !border-accentx`,
       });
 
       setRunning(false);
     } else {
-      toast.error("Server failed to stop!", {
+      toast.error(t('layout.serverStopFailed'), {
         className: `!bg-white !text-black !rounded-2xl !border-accentx`,
       });
     }
@@ -95,32 +98,32 @@ export const Layout = () => {
         />
         <SidebarButton
           icon={IconUsers}
-          label="Clients"
+          label={t('layout.clients')}
           to="/"
           active={location.pathname === "/"}
         />
         <SidebarButton
           icon={IconWorld}
-          label="World Map"
+          label={t('layout.worldMap')}
           to="/worldmap"
           active={location.pathname === "/worldmap"}
         />
         <SidebarButton
           icon={IconHistory}
-          label="Logs"
+          label={t('layout.logs')}
           to="/logs"
           active={location.pathname === "/logs"}
         />
         <SidebarButton
           icon={IconSettings}
-          label="Settings"
+          label={t('layout.settings')}
           to="/settings"
           active={location.pathname === "/settings"}
         />
 
         <div className="flex flex-col mt-auto text-xs text-accenttext text-center gap-4">
-          <p>{running ? `Listening on port ${port}` : "Not Listening"}</p>
-          <p>Made for educational purposes only!</p>
+          <p>{running ? t('layout.listening', { port }) : t('layout.notListening')}</p>
+          <p>{t('layout.educationalPurpose')}</p>
           <div className="flex flex-row justify-center items-center gap-1">
             <IconCopyright size={16} /> 2025
           </div>
@@ -131,7 +134,7 @@ export const Layout = () => {
         <header className="h-14 bg-primarybg px-4 flex items-center pt-2 gap-3">
           <div className="flex items-center rounded-full bg-secondarybg pl-3 border border-accentx h-9">
             <div className="shrink-0 text-base text-accentx select-none sm:text-sm/6">
-              Port:
+              {t('layout.port')}:
             </div>
             <input
               type="text"
@@ -157,16 +160,18 @@ export const Layout = () => {
             }}
             className="cursor-pointer rounded-full px-4 py-1.5 border border-accentx bg-secondarybg text-white hover:bg-white hover:text-black transition"
           >
-            {running ? "Stop" : "Start"}
+            {running ? t('layout.stop') : t('layout.start')}
           </button>
 
           <div className="ml-auto flex items-center gap-2 rounded-full bg-secondarybg px-4 py-1.5 border border-accentx text-white">
             <IconUsers size={18} className="text-white" />
-            <span className="text-white">Connected:</span>
+            <span className="text-white">{t('layout.connected')}:</span>
             <span className="font-semibold text-white">
               {clientList.length}
             </span>
           </div>
+
+          <LanguageSelector />
         </header>
 
         <main className="flex-1 overflow-auto m-3 text-black rounded-2xl">
