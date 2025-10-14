@@ -27,9 +27,11 @@ import { RATContext } from "../rat/RATContext";
 import { AssemblyInfo } from "../../types";
 import { invoke } from "@tauri-apps/api/core";
 import { buildClientCmd } from "../rat/RATCommands";
+import { useTranslation } from "react-i18next";
 
 export const Settings = () => {
   const { setNotificationClient, notificationClient } = useContext(RATContext)!;
+  const { t } = useTranslation();
 
   const [currentStep, setCurrentStep] = useState(0);
   // const [enableAutoSave, setEnableAutoSave] = useState(false);
@@ -85,11 +87,11 @@ export const Settings = () => {
   }, [exeClonePath]);
 
   const steps = [
-    { name: "Connection", icon: <IconServerCog /> },
-    { name: "Install", icon: <IconFolder /> },
-    { name: "Misc", icon: <IconSettings /> },
-    { name: "Assembly", icon: <IconCodeCircle /> },
-    { name: "Icon", icon: <IconPhoto /> },
+    { name: t('settings.connectionSettings'), icon: <IconServerCog /> },
+    { name: t('settings.installSettings'), icon: <IconFolder /> },
+    { name: t('settings.miscSettings'), icon: <IconSettings /> },
+    { name: t('settings.assemblySettings'), icon: <IconCodeCircle /> },
+    { name: t('settings.iconSettings'), icon: <IconPhoto /> },
   ];
 
   return (
@@ -100,7 +102,7 @@ export const Settings = () => {
             <div className="bg-secondarybg rounded-xl p-4">
               <h2 className="text-xl font-semibold mb-4 flex items-center">
                 <IconDashboard className="mr-2" size={20} />
-                Server Settings
+                {t('settings.title')}
               </h2>
 
               <div className="space-y-4">
@@ -135,7 +137,7 @@ export const Settings = () => {
           <div className="bg-secondarybg rounded-xl p-4 h-full flex flex-col">
             <h2 className="text-xl font-semibold mb-4 flex items-center">
               <IconFileSettings className="mr-2" size={20} />
-              Client Builder
+              {t('settings.buildClient')}
             </h2>
 
             <div
@@ -166,10 +168,10 @@ export const Settings = () => {
             <div className="flex-1 overflow-auto px-4">
               {currentStep === 0 && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Connection Settings</h3>
+                  <h3 className="text-lg font-medium">{t('settings.connectionSettings')}</h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col space-y-2">
-                      <label className="text-sm text-gray-400">Server IP</label>
+                      <label className="text-sm text-gray-400">{t('settings.serverIp')}</label>
                       <input
                         type="text"
                         className="bg-primarybg border border-accentx rounded-lg p-2 text-white"
@@ -180,7 +182,7 @@ export const Settings = () => {
                     </div>
                     <div className="flex flex-col space-y-2">
                       <label className="text-sm text-gray-400">
-                        Server Port
+                        {t('settings.serverPort')}
                       </label>
                       <input
                         type="text"
@@ -206,12 +208,12 @@ export const Settings = () => {
 
               {currentStep === 1 && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Installation Options</h3>
+                  <h3 className="text-lg font-medium">{t('settings.installSettings')}</h3>
 
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center">
                       <IconFolder className="mr-2 text-yellow-400" size={20} />
-                      <span>Install Client</span>
+                      <span>{t('settings.enableInstall')}</span>
                     </div>
                     <button
                       onClick={() => setEnableInstall(!enableInstall)}
@@ -231,7 +233,7 @@ export const Settings = () => {
                     <div className="space-y-4 pl-4 border-l-2 border-yellow-600">
                       <div className="flex flex-col space-y-2">
                         <label className="text-sm text-gray-400">
-                          File Name
+                          {t('settings.fileName')}
                         </label>
                         <input
                           type="text"
@@ -244,18 +246,18 @@ export const Settings = () => {
 
                       <div className="flex flex-col space-y-2">
                         <label className="text-sm text-gray-400">
-                          Install Folder
+                          {t('settings.installFolder')}
                         </label>
                         <select
                           className="bg-primarybg border border-accentx rounded-lg p-2 text-white"
                           value={installFolder}
                           onChange={(e) => setInstallFolder(e.target.value)}
                         >
-                          <option value="appdata">AppData</option>
-                          <option value="programfiles">Program Files</option>
-                          <option value="temp">Temp Directory</option>
-                          <option value="system">System32</option>
-                          <option value="desktop">Desktop</option>
+                          <option value="appdata">{t('settings.appdata')}</option>
+                          <option value="programfiles">{t('settings.programFiles')}</option>
+                          <option value="temp">{t('settings.temp')}</option>
+                          <option value="system">{t('settings.system')}</option>
+                          <option value="desktop">{t('settings.desktop')}</option>
                         </select>
                       </div>
 
@@ -265,7 +267,7 @@ export const Settings = () => {
                             className="mr-2 text-yellow-400"
                             size={20}
                           />
-                          <span>Hidden file attribute</span>
+                          <span>{t('settings.enableHidden')}</span>
                         </div>
                         <button
                           onClick={() => setEnableHidden(!enableHidden)}
@@ -288,12 +290,12 @@ export const Settings = () => {
               {currentStep === 2 && (
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium">
-                    Miscellaneous Settings
+                    {t('settings.miscSettings')}
                   </h3>
 
                   <div className="grid grid-cols-1 gap-4">
                     <div className="flex flex-col space-y-2">
-                      <label className="text-sm text-gray-400">Group</label>
+                      <label className="text-sm text-gray-400">{t('settings.group')}</label>
                       <input
                         type="text"
                         className="bg-primarybg border border-accentx rounded-lg p-2 text-white"
@@ -326,7 +328,7 @@ export const Settings = () => {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center">
                       <IconLock className="mr-2 text-purple-400" size={20} />
-                      <span>Enable Mutex</span>
+                      <span>{t('settings.enableMutex')}</span>
                     </div>
                     <button
                       onClick={() => setEnableMutex(!enableMutex)}
@@ -345,7 +347,7 @@ export const Settings = () => {
                   {enableMutex && (
                     <div className="flex flex-col space-y-2 pl-4 border-l-2 border-purple-600">
                       <label className="text-sm text-gray-400">
-                        Mutex Name
+                        {t('settings.mutexName')}
                       </label>
                       <input
                         type="text"
@@ -405,12 +407,12 @@ export const Settings = () => {
 
               {currentStep === 3 && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Assembly Information</h3>
+                  <h3 className="text-lg font-medium">{t('settings.assemblySettings')}</h3>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col space-y-2">
                       <label className="text-sm text-gray-400">
-                        Product Name
+                        {t('settings.productName')}
                       </label>
                       <input
                         type="text"
@@ -428,7 +430,7 @@ export const Settings = () => {
 
                     <div className="flex flex-col space-y-2">
                       <label className="text-sm text-gray-400">
-                        Description
+                        {t('settings.description')}
                       </label>
                       <input
                         type="text"
@@ -445,7 +447,7 @@ export const Settings = () => {
                     </div>
 
                     <div className="flex flex-col space-y-2">
-                      <label className="text-sm text-gray-400">Company</label>
+                      <label className="text-sm text-gray-400">{t('settings.company')}</label>
                       <input
                         type="text"
                         className="bg-primarybg border border-accentx rounded-lg p-2 text-white"
@@ -461,7 +463,7 @@ export const Settings = () => {
                     </div>
 
                     <div className="flex flex-col space-y-2">
-                      <label className="text-sm text-gray-400">Copyright</label>
+                      <label className="text-sm text-gray-400">{t('settings.copyright')}</label>
                       <input
                         type="text"
                         className="bg-primarybg border border-accentx rounded-lg p-2 text-white"
@@ -478,7 +480,7 @@ export const Settings = () => {
 
                     <div className="flex flex-col space-y-2">
                       <label className="text-sm text-gray-400">
-                        Trademarks
+                        {t('settings.trademark')}
                       </label>
                       <input
                         type="text"
@@ -514,7 +516,7 @@ export const Settings = () => {
 
                     <div className="flex flex-col space-y-2">
                       <label className="text-sm text-gray-400">
-                        Product Version
+                        {t('settings.version')}
                       </label>
                       <input
                         type="text"
@@ -574,12 +576,12 @@ export const Settings = () => {
 
               {currentStep === 4 && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Icon Settings</h3>
+                  <h3 className="text-lg font-medium">{t('settings.iconSettings')}</h3>
 
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center">
                       <IconPhoto className="mr-2 text-blue-400" size={20} />
-                      <span>Custom Icon</span>
+                      <span>{t('settings.enableIcon')}</span>
                     </div>
                     <button
                       onClick={() => setEnableIcon(!enableIcon)}
@@ -603,7 +605,7 @@ export const Settings = () => {
                           open({
                             filters: [
                               {
-                                name: "Icon File",
+                                name: t('settings.iconFile'),
                                 extensions: ["ico"],
                               },
                             ],
@@ -615,7 +617,7 @@ export const Settings = () => {
                         }}
                       >
                         <IconFolder className="mr-2" size={20} />
-                        Browse Icon File
+                        {t('settings.selectIcon')}
                       </button>
 
                       {iconPath ? (
