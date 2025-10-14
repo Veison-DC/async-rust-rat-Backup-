@@ -46,6 +46,7 @@ For more images, see [IMAGES.md](IMAGES.md).
 - [x] Logging
 - [x] World Map
 - [x] Client Builder (assembly info, installation, anti-VM, icon customization, etc.)
+- [x] Internationalization (i18n) - Support for English, Japanese, Simplified Chinese, Traditional Chinese, and Korean
 - [ ] More Features Coming Soon!
 
 ---

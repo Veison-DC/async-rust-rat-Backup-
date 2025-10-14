@@ -4,6 +4,7 @@ import { listen } from "@tauri-apps/api/event";
 import { takeScreenshotCmd, takeWebcamCmd } from "../../rat/RATCommands";
 import { RATContext } from "../../rat/RATContext";
 import { getCountryFlagPath } from "../../utils/preload_flags";
+import { useTranslation } from "react-i18next";
 import {
   IconSquareRoundedX,
   IconCamera,
@@ -35,6 +36,7 @@ export const ClientInfo = ({
 }) => {
   if (!client) return null;
   const { openClientWindow } = useContext(RATContext)!;
+  const { t } = useTranslation();
 
   const [screenshot, setScreenshot] = useState<string | null>(null);
   const [isScreenshotLoading, setIsScreenshotLoading] = useState(false);
@@ -183,11 +185,11 @@ export const ClientInfo = ({
             <div className="bg-primarybg rounded-lg p-3">
               <h3 className="text-accentx font-semibold mb-2 text-sm flex items-center gap-1">
                 <IconNetwork size={16} />
-                CONNECTION
+                {t('clientInfo.connection').toUpperCase()}
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <div className="text-xs text-gray-400">Address</div>
+                  <div className="text-xs text-gray-400">{t('clientInfo.address')}</div>
                   <div className="font-mono text-sm">{client.data.addr}</div>
                 </div>
                 <div>
@@ -204,19 +206,19 @@ export const ClientInfo = ({
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <div className="text-xs text-gray-400">Username</div>
+                  <div className="text-xs text-gray-400">{t('clientInfo.username')}</div>
                   <div className="text-sm">{client.system.username}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-gray-400">Privileges</div>
+                  <div className="text-xs text-gray-400">{t('clientInfo.privileged')}</div>
                   <div className="text-sm flex items-center gap-1">
                     {client.system.is_elevated ? (
                       <>
-                        <span className="text-green-400">Administrator</span>
+                        <span className="text-green-400">{t('clientInfo.admin')}</span>
                         <IconShieldCheck size={16} className="text-green-400" />
                       </>
                     ) : (
-                      <span className="text-gray-300">Standard User</span>
+                      <span className="text-gray-300">{t('clientInfo.standardUser')}</span>
                     )}
                   </div>
                 </div>
@@ -226,11 +228,11 @@ export const ClientInfo = ({
             <div className="bg-primarybg rounded-lg p-3">
               <h3 className="text-accentx font-semibold mb-2 text-sm flex items-center gap-1">
                 <IconMapPin size={16} />
-                <span>LOCATION</span>
+                <span>{t('clientInfo.location').toUpperCase()}</span>
               </h3>
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <div className="text-xs text-gray-400">Country</div>
+                  <div className="text-xs text-gray-400">{t('clientInfo.country')}</div>
                   <div className="text-sm">
                     {client.data.country_code &&
                     client.data.country_code !== "N/A" ? (
@@ -253,11 +255,11 @@ export const ClientInfo = ({
             <div className="bg-primarybg rounded-lg p-3">
               <h3 className="text-accentx font-semibold mb-2 text-sm flex items-center gap-1">
                 <IconDeviceDesktopAnalytics size={16} />
-                <span>SYSTEM</span>
+                <span>{t('clientInfo.system').toUpperCase()}</span>
               </h3>
               <div className="space-y-3">
                 <div>
-                  <div className="text-xs text-gray-400">Operating System</div>
+                  <div className="text-xs text-gray-400">{t('clientInfo.os')}</div>
                   <div className="text-sm flex items-center gap-1">
                     {getOsIcon()}
                     <span>{client.system.os_full_name}</span>
@@ -289,7 +291,7 @@ export const ClientInfo = ({
                 </div>
 
                 <div>
-                  <div className="text-xs text-gray-400">Storage</div>
+                  <div className="text-xs text-gray-400">{t('clientInfo.storage')}</div>
                   <div className="text-sm flex items-center flex-wrap gap-2">
                     {client.drives.map((drive, index) => (
                       <div key={index} className="flex items-center gap-1">
@@ -308,10 +310,10 @@ export const ClientInfo = ({
             <div className="bg-primarybg rounded-lg p-3">
               <h3 className="text-accentx font-semibold mb-2 text-sm flex items-center gap-1">
                 <IconShieldCheck size={16} />
-                <span>SECURITY</span>
+                <span>{t('clientInfo.security').toUpperCase()}</span>
               </h3>
               <div>
-                <div className="text-xs text-gray-400">Installed Antivirus</div>
+                <div className="text-xs text-gray-400">{t('clientInfo.installedAntivirus')}</div>
                 {client.security.antivirus_names.length > 0 ? (
                   <div className="text-sm">
                     {client.security.antivirus_names.map((av, index) => (
@@ -322,7 +324,7 @@ export const ClientInfo = ({
                   </div>
                 ) : (
                   <div className="text-sm text-green-400">
-                    No antivirus detected
+                    {t('clientInfo.noAntivirusDetected')}
                   </div>
                 )}
               </div>
@@ -432,7 +434,7 @@ export const ClientInfo = ({
                     ) : (
                       <>
                         <IconCameraPlus size={16} />
-                        <span>Capture</span>
+                        <span>{t('clientInfo.captureWebcam')}</span>
                       </>
                     )}
                   </button>
@@ -440,7 +442,7 @@ export const ClientInfo = ({
               </div>
               {isWebcamLoading && (
                 <p className="text-xs mt-2 text-gray-400">
-                  This may take a few seconds.
+                  {t('clientInfo.mayTakeFewSeconds')}
                 </p>
               )}
             </div>

@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { fetchClientCmd } from "../rat/RATCommands";
 import { RATContext } from "../rat/RATContext";
 import { RATClient } from "../../types";
+import { useTranslation } from "react-i18next";
 import {
   IconDeviceDesktop,
   IconUser,
@@ -23,6 +24,7 @@ import { getCountryFlagPath } from "../utils/preload_flags";
 export const ClientInfo = () => {
   const { addr } = useParams();
   const { getClientByAddr, clientList } = useContext(RATContext)!;
+  const { t } = useTranslation();
 
   const [client, setClient] = useState<RATClient | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -94,7 +96,7 @@ export const ClientInfo = () => {
       <div className="flex items-center justify-center h-screen bg-secondarybg text-white">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accentx mx-auto"></div>
-          <p className="mt-4">Loading client information...</p>
+          <p className="mt-4">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -134,11 +136,11 @@ export const ClientInfo = () => {
         <div className="bg-primarybg rounded-lg p-4">
           <h3 className="text-accenttext font-semibold mb-3 text-sm flex items-center gap-1">
             <IconNetwork size={16} />
-            CONNECTION
+            {t('clientInfo.connection').toUpperCase()}
           </h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <div className="text-xs text-gray-400">Address</div>
+              <div className="text-xs text-gray-400">{t('clientInfo.address')}</div>
               <div className="font-mono text-sm">{client.data.addr}</div>
             </div>
             <div>
@@ -155,11 +157,11 @@ export const ClientInfo = () => {
           </h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <div className="text-xs text-gray-400">Username</div>
+              <div className="text-xs text-gray-400">{t('clientInfo.username')}</div>
               <div className="text-sm">{client.system.username}</div>
             </div>
             <div>
-              <div className="text-xs text-gray-400">Privileges</div>
+              <div className="text-xs text-gray-400">{t('clientInfo.privileged')}</div>
               <div className="text-sm flex items-center gap-1">
                 {client.system.is_elevated ? (
                   <>
