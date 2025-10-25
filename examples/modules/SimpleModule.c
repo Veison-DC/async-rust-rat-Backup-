@@ -22,8 +22,17 @@ __declspec(dllexport) int Execute(int argc, char** argv) {
         
         for (int i = 1; i < argc && i < 10; i++) {
             char arg[100];
-            snprintf(arg, sizeof(arg), "  arg[%d]: %s\n", i, argv[i]);
-            strncat(message, arg, sizeof(message) - strlen(message) - 1);
+            // Safely truncate long arguments to prevent buffer overflow
+            if (strlen(argv[i]) > 80) {
+                snprintf(arg, sizeof(arg), "  arg[%d]: %.80s...\n", i, argv[i]);
+            } else {
+                snprintf(arg, sizeof(arg), "  arg[%d]: %s\n", i, argv[i]);
+            }
+            // Safely concatenate with bounds checking
+            size_t remaining = sizeof(message) - strlen(message) - 1;
+            if (remaining > strlen(arg)) {
+                strncat(message, arg, remaining);
+            }
         }
     } else {
         snprintf(message, sizeof(message), 

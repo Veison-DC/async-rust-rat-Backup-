@@ -30,7 +30,7 @@ if %ERRORLEVEL% NEQ 0 (
     echo.
 ) else (
     echo Building PE DLL: SimpleModule.dll
-    cl /LD /Fe:SimpleModule.dll SimpleModule.c user32.lib /link /NODEFAULTLIB:libcmt.lib
+    cl /LD /MD /Fe:SimpleModule.dll SimpleModule.c user32.lib
     if %ERRORLEVEL% EQU 0 (
         echo [SUCCESS] SimpleModule.dll built successfully
     ) else (

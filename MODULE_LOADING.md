@@ -178,6 +178,8 @@ The PE loader (`reflective_loader.rs`) implements:
 - Base relocation processing
 - TLS callback handling
 
+⚠️ **SECURITY WARNING**: The current PE loader is a skeleton implementation and should NOT be used in production. A complete implementation requires proper PE format parsing, security validation, and error handling. Using incomplete loaders can lead to crashes, memory corruption, or security vulnerabilities.
+
 ### .NET Assembly Loader
 
 The .NET loader (`dotnet_loader.rs`) implements:
@@ -191,6 +193,8 @@ The .NET loader (`dotnet_loader.rs`) implements:
 - ICLRRuntimeHost implementation
 - AppDomain management
 - Method reflection and invocation
+
+⚠️ **SECURITY WARNING**: The current .NET loader is a skeleton implementation and should NOT be used in production. A complete implementation requires proper CLR hosting, COM interface handling, and .NET security model integration. Using incomplete loaders can lead to runtime errors or security issues.
 
 ### Shellcode Executor
 

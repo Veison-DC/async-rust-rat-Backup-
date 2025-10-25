@@ -63,7 +63,15 @@ namespace ModuleExample
                     Console.WriteLine("COMPUTERNAME: " + Environment.GetEnvironmentVariable("COMPUTERNAME"));
                     Console.WriteLine("USERNAME: " + Environment.GetEnvironmentVariable("USERNAME"));
                     Console.WriteLine("USERDOMAIN: " + Environment.GetEnvironmentVariable("USERDOMAIN"));
-                    Console.WriteLine("PATH: " + Environment.GetEnvironmentVariable("PATH")?.Split(';').FirstOrDefault());
+                    
+                    // Display first few PATH entries (PATH can be very long)
+                    string[] pathEntries = Environment.GetEnvironmentVariable("PATH")?.Split(';');
+                    Console.WriteLine($"PATH (showing first 3 of {pathEntries?.Length ?? 0} entries):");
+                    if (pathEntries != null) {
+                        for (int i = 0; i < Math.Min(3, pathEntries.Length); i++) {
+                            Console.WriteLine($"  {pathEntries[i]}");
+                        }
+                    }
                 }
                 
                 Console.WriteLine("\n=== Module execution completed successfully ===");
