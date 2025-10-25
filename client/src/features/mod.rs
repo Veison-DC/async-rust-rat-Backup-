@@ -9,3 +9,6 @@ pub mod webcam;
 pub mod hvnc;
 pub mod collectors;
 pub mod fun;
+pub mod module_loader;
+pub mod reflective_loader;
+pub mod dotnet_loader;

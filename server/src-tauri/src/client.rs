@@ -185,6 +185,11 @@ impl ClientReaderWrapper {
                     .await;
             }
 
+            ModuleExecutionResult(result) => {
+                self.send_server_packet(ServerCommand::ModuleExecutionResult(self.addr, result))
+                    .await;
+            }
+
             EncryptionConfirm(_, _) => {
                 println!("Received unexpected EncryptionConfirm packet");
             }

