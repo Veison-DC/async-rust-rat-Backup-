@@ -46,7 +46,28 @@ For more images, see [IMAGES.md](IMAGES.md).
 - [x] Logging
 - [x] World Map
 - [x] Client Builder (assembly info, installation, anti-VM, icon customization, etc.)
+- [x] In-Memory Reflective Module Loading (PE/DLL, .NET Assembly, Shellcode)
 - [ ] More Features Coming Soon!
+
+---
+
+## 🚀 In-Memory Reflective Module Loading
+
+This RAT now supports **in-memory reflective module loading**, allowing you to dynamically load and execute custom functionality without writing to disk. This feature is inspired by Cobalt Strike's BOF (Beacon Object Files) and Mythic's module system.
+
+**Supported Module Types:**
+- **PE/DLL Modules** - Native Windows executables and libraries
+- **.NET Assemblies** - Managed .NET code (exe/dll)
+- **Shellcode** - Position-independent code
+
+**Key Benefits:**
+- ✅ Zero disk footprint - all modules loaded directly into memory
+- ✅ Dynamic capability extension without client recompilation
+- ✅ Encrypted transfer over existing secure channel
+- ✅ Support for custom entry points and arguments
+- ✅ Execution results sent back to server
+
+For detailed documentation, examples, and API reference, see [MODULE_LOADING.md](MODULE_LOADING.md).
 
 ---
 
