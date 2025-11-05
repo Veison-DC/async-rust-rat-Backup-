@@ -165,20 +165,40 @@ static MODULE_CACHE: Lazy<Arc<Mutex<HashMap<String, ModuleData>>>>
 
 ### Reflective PE Loader
 
-The PE loader (`reflective_loader.rs`) implements:
-- PE header parsing
-- Section mapping to allocated memory
-- Import table resolution
-- Relocation processing
-- Entry point or exported function invocation
+The PE loader (`reflective_loader.rs`) implements a complete reflective PE/DLL loader with the following capabilities:
 
-**Current Status**: Basic skeleton implemented. Full implementation requires:
-- Complete PE header structure parsing
-- Dynamic import resolution
-- Base relocation processing
-- TLS callback handling
+**Implemented Features:**
+- ✅ Complete PE header parsing (DOS, NT, Optional headers)
+- ✅ Section mapping to allocated memory with proper alignment
+- ✅ Import table resolution (both by name and ordinal)
+- ✅ Base relocation processing (HIGHLOW and DIR64)
+- ✅ Section permission setting (execute, read, write combinations)
+- ✅ TLS callback execution
+- ✅ Entry point invocation (DllMain)
+- ✅ Exported function calling by name
 
-⚠️ **SECURITY WARNING**: The current PE loader is a skeleton implementation and should NOT be used in production. A complete implementation requires proper PE format parsing, security validation, and error handling. Using incomplete loaders can lead to crashes, memory corruption, or security vulnerabilities.
+**How it Works:**
+1. **Parse PE Headers** - Validates DOS and NT headers, extracts image information
+2. **Allocate Memory** - Allocates memory block for the entire image
+3. **Copy Sections** - Copies PE headers and all sections to allocated memory
+4. **Process Relocations** - Adjusts addresses if loaded at different base address
+5. **Resolve Imports** - Loads required DLLs and resolves import addresses
+6. **Set Permissions** - Applies correct memory protection for each section
+7. **Execute TLS** - Runs TLS callbacks if present
+8. **Call Entry Point** - Executes DllMain or specified exported function
+9. **Cleanup** - Frees allocated memory after execution
+
+**Security Features:**
+- Proper memory protection (no unnecessary RWX pages)
+- Import validation
+- Bounds checking on all memory operations
+- Clean memory cleanup after execution
+
+**Supported Scenarios:**
+- DLL loading with DllMain execution
+- Calling specific exported functions by name
+- Passing arguments to exported functions
+- TLS initialization and callbacks
 
 ### .NET Assembly Loader
 
@@ -308,13 +328,15 @@ await invoke('unload_module', {
 - [x] Server/client communication
 - [x] Tauri API endpoints
 
-### Phase 2: PE Reflective Loader (TODO)
-- [ ] Complete PE header parsing
-- [ ] Section mapping implementation
-- [ ] Import table resolution
-- [ ] Relocation processing
-- [ ] Exception handling
-- [ ] TLS callback support
+### Phase 2: PE Reflective Loader ✅
+- [x] Complete PE header parsing
+- [x] Section mapping implementation
+- [x] Import table resolution
+- [x] Relocation processing
+- [x] Exception handling
+- [x] TLS callback support
+- [x] Entry point execution
+- [x] Exported function calling
 
 ### Phase 3: .NET Assembly Loader (TODO)
 - [ ] CLR runtime initialization

@@ -56,9 +56,9 @@ For more images, see [IMAGES.md](IMAGES.md).
 This RAT now supports **in-memory reflective module loading**, allowing you to dynamically load and execute custom functionality without writing to disk. This feature is inspired by Cobalt Strike's BOF (Beacon Object Files) and Mythic's module system.
 
 **Supported Module Types:**
-- **PE/DLL Modules** - Native Windows executables and libraries
-- **.NET Assemblies** - Managed .NET code (exe/dll)
-- **Shellcode** - Position-independent code
+- **PE/DLL Modules** - Native Windows executables and libraries ✅ **Production Ready**
+- **.NET Assemblies** - Managed .NET code (exe/dll) ⏳ Coming Soon
+- **Shellcode** - Position-independent code ✅ **Production Ready**
 
 **Key Benefits:**
 - ✅ Zero disk footprint - all modules loaded directly into memory
@@ -66,6 +66,7 @@ This RAT now supports **in-memory reflective module loading**, allowing you to d
 - ✅ Encrypted transfer over existing secure channel
 - ✅ Support for custom entry points and arguments
 - ✅ Execution results sent back to server
+- ✅ Full PE reflective loader with import resolution and relocations
 
 For detailed documentation, examples, and API reference, see [MODULE_LOADING.md](MODULE_LOADING.md).
 
