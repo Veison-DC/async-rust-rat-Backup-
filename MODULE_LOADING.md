@@ -466,13 +466,63 @@ await invoke('unload_module', {
 - [x] Timeout enforcement
 - [x] Secure memory allocation wrappers
 
-### Phase 5: UI & Documentation (TODO)
-- [ ] Module management UI
-- [ ] Module library interface
-- [ ] Upload/download UI
-- [ ] Execution history
-- [ ] Usage tutorials
-- [ ] Example modules
+### Phase 5: UI & Documentation ✅
+- [x] Module management UI
+- [x] Module library interface (via UI)
+- [x] Upload/download UI
+- [x] Execution history display
+- [x] Usage tutorials (MODULE_TUTORIALS.md)
+- [x] Comprehensive documentation
+
+## UI Components
+
+### Module Manager Interface
+
+The Module Manager provides a comprehensive UI for managing modules:
+
+**Features:**
+- **Module Loading:** Browse and load modules from disk
+- **Module List:** View all loaded modules with details
+- **Module Execution:** Execute modules with custom arguments
+- **Execution History:** Track all module executions and results
+- **Real-time Updates:** Live execution result streaming
+
+**UI Location:**
+- Path: `server/src/pages/ModuleManager.tsx`
+- Access: Module Manager tab in client interface
+
+**Usage:**
+1. Navigate to target client
+2. Open Module Manager tab
+3. Click "Load Module" to upload new module
+4. Select module and click "Execute Module"
+5. View results in Execution History panel
+
+### Module Loading Dialog
+
+Upload and configure new modules:
+- Browse for module files (.dll, .exe, .bin)
+- Auto-generate module IDs from filename
+- Select module type (PE, .NET, Shellcode)
+- Specify entry point (optional)
+- Add module description
+
+### Module Execution Dialog
+
+Execute loaded modules with parameters:
+- Select module from loaded list
+- Enter command-line arguments
+- Set execution timeout
+- Monitor real-time execution status
+
+### Execution History Panel
+
+View execution results:
+- Success/failure indicators
+- Module output (stdout/stderr)
+- Error messages
+- Exit codes
+- Chronological history
 
 ## Technical References
 
