@@ -325,25 +325,43 @@ For questions or issues:
 3. Look at example modules in `examples/modules/`
 4. Create an issue on GitHub
 
-## Current Limitations
+## Current Status & Limitations
 
-- ✅ PE/DLL loader is fully implemented and production-ready
-- ✅ .NET assembly loader is fully implemented and production-ready (Phase 3 Complete!)
-- ✅ Shellcode loader is fully functional
-- ⚠️ No built-in module library yet
-- ⚠️ No signature verification yet
+**Production Ready:**
+- ✅ PE/DLL loader - Fully implemented with all features
+- ✅ .NET assembly loader - Complete CLR hosting (Phase 3)
+- ✅ Shellcode loader - Fully functional
+- ✅ Security framework - Comprehensive validation (Phase 4 Complete)
 
-**What's New in Phase 3:**
-- Complete .NET assembly loader with CLR hosting
-- COM interface implementation (ICLRMetaHost, ICLRRuntimeInfo, ICLRRuntimeHost)
-- .NET Framework 4.0 runtime initialization
-- Assembly loading from byte array
-- Method invocation via reflection
-- Entry point detection and calling
+**Security Features (Phase 4):**
+- ✅ SHA-256 module hash calculation
+- ✅ Module integrity verification
+- ✅ Security policy framework
+- ✅ Size limit enforcement (50MB default)
+- ✅ Argument sanitization
+- ✅ Timeout enforcement
+- ✅ PE file validation
+- ✅ Secure memory allocation
 
-**All Three Module Types Now Production-Ready:**
-- ✅ Shellcode - Direct memory execution
-- ✅ PE/DLL - Full reflective loader
-- ✅ .NET Assemblies - CLR hosting with COM
+**Future Enhancements:**
+- ⏳ Module signature verification (infrastructure ready)
+- ⏳ Built-in module library
+- ⏳ Module management UI
 
-See `IMPLEMENTATION_SUMMARY.md` for technical details and Phase 4 roadmap.
+**What's New in Phase 4:**
+- Complete security framework
+- Module hash calculation and integrity verification
+- Configurable security policies
+- Input sanitization for all arguments
+- Size and timeout validation
+- PE security checks
+- Comprehensive error handling
+- Unit tests for security functions
+
+**All Core Features Complete:**
+- ✅ Phase 1: Core Infrastructure
+- ✅ Phase 2: PE Reflective Loader
+- ✅ Phase 3: .NET Assembly Loader
+- ✅ Phase 4: Security & Testing
+
+See `IMPLEMENTATION_SUMMARY.md` for complete technical details.
