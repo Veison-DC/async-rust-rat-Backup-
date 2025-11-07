@@ -573,6 +573,118 @@ impl ServerWrapper {
                         .await;
                 }
 
+                LoadModule(addr, module_data) => {
+                    self.handle_command(&addr, ClientboundPacket::LoadModule(module_data))
+                        .await;
+                }
+
+                ExecuteModule(addr, execution) => {
+                    self.handle_command(&addr, ClientboundPacket::ExecuteModule(execution))
+                        .await;
+                }
+
+                UnloadModule(addr, module_id) => {
+                    self.handle_command(&addr, ClientboundPacket::UnloadModule(module_id))
+                        .await;
+                }
+
+                ListModules(addr) => {
+                    self.handle_command(&addr, ClientboundPacket::ListModules)
+                        .await;
+                }
+
+                ModuleExecutionResult(addr, result) => {
+                    println!("Module execution result from {}: success={}, output={}", 
+                             addr, result.success, result.output);
+                    if let Some(tauri_handle) = &self.tauri_handle {
+                        if let Ok(handle) = tauri_handle.lock() {
+                            let _ = handle.emit(
+                                "module-execution-result",
+                                serde_json::json!({
+                                    "addr": addr.to_string(),
+                                    "module_id": result.module_id,
+                                    "success": result.success,
+                                    "output": result.output,
+                                    "error": result.error,
+                                    "exit_code": result.exit_code,
+                                })
+                            );
+                        }
+                    }
+                }
+                
+                GetProcessConnections(addr, pid) => {
+                    self.handle_command(&addr, ClientboundPacket::GetProcessConnections(pid))
+                        .await;
+                }
+                
+                ProcessConnections(addr, process) => {
+                    println!("Process connections from {}: pid={}", addr, process.pid);
+                    if let Some(tauri_handle) = &self.tauri_handle {
+                        if let Ok(handle) = tauri_handle.lock() {
+                            let _ = handle.emit(
+                                "process-connections",
+                                serde_json::json!({
+                                    "addr": addr.to_string(),
+                                    "process": process,
+                                })
+                            );
+                        }
+                    }
+                }
+                
+                AddFirewallRule(addr, rule) => {
+                    self.handle_command(&addr, ClientboundPacket::AddFirewallRule(rule))
+                        .await;
+                }
+                
+                RemoveFirewallRule(addr, rule) => {
+                    self.handle_command(&addr, ClientboundPacket::RemoveFirewallRule(rule))
+                        .await;
+                }
+                
+                FirewallRuleResult(addr, success, message) => {
+                    println!("Firewall rule result from {}: success={}, message={}", addr, success, message);
+                    if let Some(tauri_handle) = &self.tauri_handle {
+                        if let Ok(handle) = tauri_handle.lock() {
+                            let _ = handle.emit(
+                                "firewall-rule-result",
+                                serde_json::json!({
+                                    "addr": addr.to_string(),
+                                    "success": success,
+                                    "message": message,
+                                })
+                            );
+                        }
+                    }
+                }
+                
+                AddRouteRedirect(addr, redirect) => {
+                    self.handle_command(&addr, ClientboundPacket::AddRouteRedirect(redirect))
+                        .await;
+                }
+                
+                RemoveRouteRedirect(addr, redirect) => {
+                    self.handle_command(&addr, ClientboundPacket::RemoveRouteRedirect(redirect))
+                        .await;
+                }
+                
+                RouteRedirectResult(addr, success, message) => {
+                    println!("Route redirect result from {}: success={}, message={}", addr, success, message);
+                    if let Some(tauri_handle) = &self.tauri_handle {
+                        if let Ok(handle) = tauri_handle.lock() {
+                            let _ = handle.emit(
+                                "route-redirect-result",
+                                serde_json::json!({
+                                    "addr": addr.to_string(),
+                                    "success": success,
+                                    "message": message,
+                                })
+                            );
+                        }
+                    }
+                }
+
 
             }
         }

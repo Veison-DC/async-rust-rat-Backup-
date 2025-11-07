@@ -46,7 +46,46 @@ For more images, see [IMAGES.md](IMAGES.md).
 - [x] Logging
 - [x] World Map
 - [x] Client Builder (assembly info, installation, anti-VM, icon customization, etc.)
+- [x] In-Memory Reflective Module Loading (PE/DLL, .NET Assembly, Shellcode)
 - [ ] More Features Coming Soon!
+
+---
+
+## 🚀 In-Memory Reflective Module Loading
+
+This RAT now supports **in-memory reflective module loading**, allowing you to dynamically load and execute custom functionality without writing to disk. This feature is inspired by Cobalt Strike's BOF (Beacon Object Files) and Mythic's module system.
+
+**Supported Module Types:**
+- **PE/DLL Modules** - Native Windows executables and libraries ✅ **Production Ready**
+- **.NET Assemblies** - Managed .NET code (exe/dll) ✅ **Production Ready (Phase 3 Complete)**
+- **Shellcode** - Position-independent code ✅ **Production Ready**
+
+**Key Benefits:**
+- ✅ Zero disk footprint - all modules loaded directly into memory
+- ✅ Dynamic capability extension without client recompilation
+- ✅ Encrypted transfer over existing secure channel
+- ✅ Support for custom entry points and arguments
+- ✅ Execution results sent back to server
+- ✅ Full PE reflective loader with import resolution and relocations
+- ✅ Complete .NET CLR hosting with COM interface implementation
+- ✅ Comprehensive security framework (Phase 4 Complete)
+- ✅ Module integrity verification with SHA-256
+- ✅ Input sanitization and validation
+- ✅ Configurable security policies
+- ✅ **Full-featured UI for module management (Phase 5 Complete)**
+- ✅ **Complete documentation and tutorials**
+
+**All Phases Complete:**
+- ✅ Phase 1: Core Infrastructure
+- ✅ Phase 2: PE Reflective Loader
+- ✅ Phase 3: .NET Assembly Loader
+- ✅ Phase 4: Security & Testing
+- ✅ Phase 5: UI & Documentation
+
+For detailed documentation, examples, and API reference, see:
+- [MODULE_LOADING.md](MODULE_LOADING.md) - Complete API reference
+- [MODULE_TUTORIALS.md](MODULE_TUTORIALS.md) - Step-by-step tutorials
+- [QUICKSTART_MODULES.md](QUICKSTART_MODULES.md) - Quick start guide
 
 ---
 

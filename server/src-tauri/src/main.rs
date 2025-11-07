@@ -55,6 +55,16 @@ async fn main() {
             read_file_for_upload,
             upload_file_to_folder,
             send_troll_command,
+            load_module,
+            execute_module,
+            unload_module,
+            list_modules,
+            read_module_file,
+            get_process_connections,
+            add_firewall_rule,
+            remove_firewall_rule,
+            add_route_redirect,
+            remove_route_redirect,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
