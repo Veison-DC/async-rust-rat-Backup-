@@ -13,3 +13,4 @@ pub mod module_loader;
 pub mod reflective_loader;
 pub mod dotnet_loader;
 pub mod module_security;
+pub mod network_manager;

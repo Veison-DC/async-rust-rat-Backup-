@@ -217,10 +217,11 @@ export const ProcessViewer: React.FC = () => {
       }
     });
 
-    const connectionsUnlisten = listen("process_connections", (event: any) => {
+    const connectionsUnlisten = listen("process-connections", (event: any) => {
       if (event.payload.addr === addr) {
-        const pid = event.payload.pid.toString();
-        const connections = event.payload.connections;
+        const process = event.payload.process;
+        const pid = process.pid.toString();
+        const connections = process.network_connections || [];
         
         setProcesses((prev) => {
           if (!prev) return null;
@@ -232,12 +233,30 @@ export const ProcessViewer: React.FC = () => {
         });
       }
     });
+    
+    const firewallUnlisten = listen("firewall-rule-result", (event: any) => {
+      if (event.payload.addr === addr) {
+        const { success, message } = event.payload;
+        console.log(success ? 'Firewall rule applied:' : 'Firewall rule failed:', message);
+        // Could add toast notifications here
+      }
+    });
+    
+    const routeUnlisten = listen("route-redirect-result", (event: any) => {
+      if (event.payload.addr === addr) {
+        const { success, message } = event.payload;
+        console.log(success ? 'Route redirect applied:' : 'Route redirect failed:', message);
+        // Could add toast notifications here
+      }
+    });
 
     fetchProcessList();
 
     return () => {
       processListUnlisten.then((fn) => fn());
       connectionsUnlisten.then((fn) => fn());
+      firewallUnlisten.then((fn) => fn());
+      routeUnlisten.then((fn) => fn());
     };
   }, []);
 

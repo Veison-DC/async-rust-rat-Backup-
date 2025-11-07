@@ -1139,3 +1139,89 @@ pub async fn read_module_file(file_path: &str) -> Result<Vec<u8>, String> {
     fs::read(file_path)
         .map_err(|e| format!("Failed to read module file: {}", e))
 }
+
+#[tauri::command]
+pub async fn get_process_connections(
+    addr: String,
+    pid: usize,
+    app_handle: tauri::AppHandle,
+) -> Result<String, String> {
+    let addr: SocketAddr = addr.parse().map_err(|e| format!("Invalid address: {}", e))?;
+
+    send_command(
+        ServerCommand::GetProcessConnections(addr, pid),
+        app_handle,
+    )
+    .await?;
+
+    Ok("Get process connections command sent".to_string())
+}
+
+#[tauri::command]
+pub async fn add_firewall_rule(
+    addr: String,
+    rule: FirewallRule,
+    app_handle: tauri::AppHandle,
+) -> Result<String, String> {
+    let addr: SocketAddr = addr.parse().map_err(|e| format!("Invalid address: {}", e))?;
+
+    send_command(
+        ServerCommand::AddFirewallRule(addr, rule),
+        app_handle,
+    )
+    .await?;
+
+    Ok("Add firewall rule command sent".to_string())
+}
+
+#[tauri::command]
+pub async fn remove_firewall_rule(
+    addr: String,
+    rule: FirewallRule,
+    app_handle: tauri::AppHandle,
+) -> Result<String, String> {
+    let addr: SocketAddr = addr.parse().map_err(|e| format!("Invalid address: {}", e))?;
+
+    send_command(
+        ServerCommand::RemoveFirewallRule(addr, rule),
+        app_handle,
+    )
+    .await?;
+
+    Ok("Remove firewall rule command sent".to_string())
+}
+
+#[tauri::command]
+pub async fn add_route_redirect(
+    addr: String,
+    redirect: RouteRedirect,
+    app_handle: tauri::AppHandle,
+) -> Result<String, String> {
+    let addr: SocketAddr = addr.parse().map_err(|e| format!("Invalid address: {}", e))?;
+
+    send_command(
+        ServerCommand::AddRouteRedirect(addr, redirect),
+        app_handle,
+    )
+    .await?;
+
+    Ok("Add route redirect command sent".to_string())
+}
+
+#[tauri::command]
+pub async fn remove_route_redirect(
+    addr: String,
+    redirect: RouteRedirect,
+    app_handle: tauri::AppHandle,
+) -> Result<String, String> {
+    let addr: SocketAddr = addr.parse().map_err(|e| format!("Invalid address: {}", e))?;
+
+    send_command(
+        ServerCommand::RemoveRouteRedirect(addr, redirect),
+        app_handle,
+    )
+    .await?;
+
+    Ok("Remove route redirect command sent".to_string())
+}
+

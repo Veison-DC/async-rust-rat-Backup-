@@ -106,4 +106,14 @@ pub enum ServerCommand {
     UnloadModule(SocketAddr, String),
     ListModules(SocketAddr),
     ModuleExecutionResult(SocketAddr, ModuleExecutionResult),
+    
+    // Network management
+    GetProcessConnections(SocketAddr, usize),
+    ProcessConnections(SocketAddr, Process),
+    AddFirewallRule(SocketAddr, FirewallRule),
+    RemoveFirewallRule(SocketAddr, FirewallRule),
+    FirewallRuleResult(SocketAddr, bool, String),
+    AddRouteRedirect(SocketAddr, RouteRedirect),
+    RemoveRouteRedirect(SocketAddr, RouteRedirect),
+    RouteRedirectResult(SocketAddr, bool, String),
 }

