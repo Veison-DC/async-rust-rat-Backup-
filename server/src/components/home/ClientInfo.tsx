@@ -24,6 +24,7 @@ import {
   IconMapPin,
   IconWindowMaximize,
   IconNetwork,
+  IconInfoCircle,
 } from "@tabler/icons-react";
 
 export const ClientInfo = ({
@@ -194,6 +195,29 @@ export const ClientInfo = ({
                   <div className="text-xs text-gray-400">Group</div>
                   <div className="text-sm">{client.data.group}</div>
                 </div>
+              </div>
+            </div>
+
+            {/* Note Section */}
+            <div className="bg-primarybg rounded-lg p-3">
+              <h3 className="text-accentx font-semibold mb-2 text-sm flex items-center gap-1">
+                <IconInfoCircle size={16} />
+                NOTE
+              </h3>
+              <div>
+                <textarea
+                  value={client.data.note || ""}
+                  onChange={(e) => {
+                    // TODO: Add save function to persist note
+                    console.log("Note changed:", e.target.value);
+                  }}
+                  className="w-full px-3 py-2 bg-secondarybg text-white rounded border border-gray-600 focus:border-accentx focus:outline-none resize-none"
+                  placeholder="Add note or annotation for this host..."
+                  rows={3}
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  Notes are stored locally and persist across sessions
+                </p>
               </div>
             </div>
 

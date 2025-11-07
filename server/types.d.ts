@@ -50,6 +50,7 @@ export interface ClientData {
   disconnected?: boolean;
   group: string;
   country_code: string;
+  note?: string;
 }
 
 export interface BiosInfo {
@@ -158,6 +159,16 @@ export interface CommandProps {
 export type ProcessType = {
   pid: string;
   name: string;
+  network_connections?: NetworkConnection[];
+};
+
+export type NetworkConnection = {
+  local_address: string;
+  local_port: number;
+  remote_address: string;
+  remote_port: number;
+  state: string;
+  protocol: string;
 };
 
 export type FileType = {

